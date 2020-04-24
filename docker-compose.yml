@@ -1,0 +1,35 @@
+# docker-composeのバージョン
+version: '3'
+# 構築するサービス情報：１階層下にサービス単位で設定を記述
+services:
+  # [node]という名前のサービス ↓↓↓ここから
+  node:
+    build:
+      #docker-compose.ymlがあるディレクトリに対するDockerfileのディレクトリを指定
+      #この場合、docker-compose.ymlと同一ディレクトリのDockerfileを読み込む
+      context: .
+
+    # コンテナを起動させ続けるかどうかの選択
+    tty: true
+
+    # 環境変数を追加
+    environment:
+      - NODE_ENV=production
+
+    # ローカルのディレクトリが接続（マウント）する作業ディレクトリを指定
+    # コロン「:」の左側がホストのパス、右側がコンテナ内のパス
+    # この場合、ホスト側のカレントディレクトリへコンテナの「/usr/src/app」をマウントする
+    volumes:
+      - ".:/usr/src/app"
+
+    # コンテナ起動時（docker-compose up）で実行されるコマンド
+#    command: sh -c "cd sample-project && yarn start"
+    command: sh -c "cd sample-project && yarn start"
+
+    # 外部に対して公開するポート番号
+    # 左側（ホスト）がブラウザ側で指定するポート、右側（コンテナ）がコンテナ内のポート
+    ports:
+      - "3001:3000"
+# [node]という名前のサービス  ↑↑↑ここまで
+
+# 複数サービスを起動させる場合は、上記と同じような記述で各サービスの設定を記述する
